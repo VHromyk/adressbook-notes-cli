@@ -1,28 +1,39 @@
 from help_commands import help_info
-from contacts.logic import add_contact, delete_contact, show_all, search_contact
+from contacts import add_contact, delete_contact, show_all, search_contact, AddressBook
+from commands_enum import Command
 
 
 def main():
     print("Welcome to Personal Assistant!")
+
+    book = AddressBook()
+
     while True:
-        print("\nAvailable commands: [add, delete, show, search, exit, help]")
+        print("\nAvailable commands:", [cmd.value for cmd in Command])
         command = input("Enter a command: ").strip().lower()
 
-        if command == "exit":
+        if command == Command.EXIT.value:
             print("Good bye!")
             break
-        elif command == "hello":
+
+        elif command == Command.HELLO.value:
             print("How can I help you?")
-        elif command == "add":
-            print(add_contact())
-        elif command == "delete":
-            print(delete_contact())
-        elif command == "show":
-            print(show_all())
-        elif command == "search":
-            print(search_contact())
-        elif command == "help":
+
+        elif command == Command.ADD.value:
+            print(add_contact(book))
+
+        elif command == Command.DELETE.value:
+            print(delete_contact(book))
+
+        elif command == Command.SHOW.value:
+            print(show_all(book))
+
+        elif command == Command.SEARCH.value:
+            print(search_contact(book))
+
+        elif command == Command.HELP.value:
             help_info()
+
         else:
             print("Invalid command.")
 
