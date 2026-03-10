@@ -1,0 +1,63 @@
+from contacts.models import AddressBook, Record
+
+book = AddressBook()
+
+
+def add_contact():
+    name = input("Введіть ім'я: ").strip()
+    if not name:
+        return "Помилка: Ім'я не може бути порожнім."
+
+    record = Record(name)
+
+    phone = input("Введіть телефон (10-12 цифр): ").strip()
+    try:
+        if phone:
+            record.add_phone(phone)
+    except ValueError as e:
+        return f"Помилка: {e}"
+
+    email = input("Введіть email: ").strip()
+    try:
+        if email:
+            record.set_email(email)
+    except ValueError as e:
+        return f"Помилка: {e}"
+
+    birthday = input("Введіть день народження (DD.MM.YYYY): ").strip()
+    try:
+        if birthday:
+            record.set_birthday(birthday)
+    except ValueError as e:
+        return f"Помилка: {e}"
+
+    address = input("Введіть адресу: ").strip()
+    if address:
+        record.set_address(address)
+
+    book.add_record(record)
+    return f"Контакт '{name}' успішно додано!"
+
+
+def delete_contact():
+    name = input("Введіть ім'я контакту для видалення: ").strip()
+    if book.delete(name):
+        return f"Контакт '{name}' видалено."
+    return "Контакт не знайдено."
+
+
+def show_all():
+    if not book.data:
+        return "Книга контактів порожня."
+
+    result = "\n--- Список контактів ---\n"
+    result += "\n".join(str(record) for record in book.data.values())
+    return result
+
+
+def search_contact():
+    query = input("Введіть ім'я для пошуку: ").strip()
+    record = book.get(query)
+    if record:
+        return str(record)
+    return "Контакт не знайдено."
