@@ -1,3 +1,4 @@
+from contacts.contact import suggest_command, execute_command
 from help_commands import help_info
 from contacts import add_contact, delete_contact, show_all, search_contact, AddressBook, upcoming_birthdays
 from commands_enum import Command
@@ -15,6 +16,7 @@ def main():
         book = AddressBook()
 
     while True:
+
         print("\nAvailable commands:", [cmd.value for cmd in Command])
         command = input("Enter a command: ").strip().lower()
 
@@ -23,29 +25,23 @@ def main():
             print("Good bye!")
             break
 
-        elif command == Command.HELLO.value:
-            print("How can I help you?")
-
-        elif command == Command.ADD.value:
-            print(add_contact(book))
-
-        elif command == Command.DELETE.value:
-            print(delete_contact(book))
-
-        elif command == Command.SHOW.value:
-            print(show_all(book))
-
-        elif command == Command.SEARCH.value:
-            print(search_contact(book))
-
-        elif command == Command.HELP.value:
-            help_info()
-
-        elif command == Command.UPCOMING_BIRTHDAYS.value:
-            print(upcoming_birthdays(book))
+        if command in [cmd.value for cmd in Command]:
+            execute_command(command, book)
 
         else:
-            print("Invalid command.")
+            suggestion = suggest_command(command)
+
+            if suggestion:
+                print(f"Invalid command: '{command}'.")
+                confirm = input(f"Did you mean '{suggestion}'? (y/n): ").strip().lower()
+
+                if confirm == "y":
+                    execute_command(suggestion, book)
+                else:
+                    print("Command cancelled.")
+
+            else:
+                print("Invalid command. Type 'help' to see available commands.")
 
 
 if __name__ == "__main__":
