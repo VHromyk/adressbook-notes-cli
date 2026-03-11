@@ -8,6 +8,7 @@ class Command(Enum):
     HELP = "help"
     EXIT = "exit"
     HELLO = "hello"
+    UPCOMING_BIRTHDAYS = "upcoming birthdays"
     ADD_NOTE = "add note"
     DELETE_NOTE = "delete note"
     EDIT_NOTE_TITLE = "edit note title"
