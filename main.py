@@ -1,18 +1,25 @@
 from help_commands import help_info
 from contacts import add_contact, delete_contact, show_all, search_contact, AddressBook
 from commands_enum import Command
+from storage import load_data, save_data
+
+ADDRESS_BOOK_DATA_FILE = "addressbook.pkl"
 
 
 def main():
     print("Welcome to Personal Assistant!")
 
-    book = AddressBook()
+    try:
+        book = load_data(ADDRESS_BOOK_DATA_FILE)
+    except FileNotFoundError:
+        book = AddressBook()
 
     while True:
         print("\nAvailable commands:", [cmd.value for cmd in Command])
         command = input("Enter a command: ").strip().lower()
 
         if command == Command.EXIT.value:
+            save_data(book, ADDRESS_BOOK_DATA_FILE)
             print("Good bye!")
             break
 
