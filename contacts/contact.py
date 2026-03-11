@@ -59,3 +59,22 @@ def search_contact(book: AddressBook):
     if record:
         return str(record)
     return "Контакт не знайдено."
+
+#Інтерфейс для модуля Днів Народжень
+def upcoming_birthdays(book: AddressBook):
+    days_input = input("Введіть кількість днів: ").strip()
+
+    if not days_input.isdigit():
+        return "Помилка: потрібно ввести ціле невід'ємне число."
+
+    days = int(days_input)
+    upcoming = book.get_upcoming_birthdays(days)
+
+    if not upcoming:
+        return f"Немає контактів із днем народження у найближчі {days} днів."
+
+    result = [f"Контакти з днем народження у найближчі {days} днів:"]
+    for name, birthday, delta in upcoming:
+        result.append(f"{name} — {birthday} (через {delta} дн.)")
+
+    return "\n".join(result)

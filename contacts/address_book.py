@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Record:
@@ -65,3 +65,38 @@ class AddressBook:
 
     def get(self, name: str) -> Record | None:
         return self.data.get(name)
+
+    #Парсинг дати
+    def parse_birthday(self, birthday: str) -> date | None:
+        if not birthday:
+            return None
+
+        for i in ("%Y-%m-%d", "%d.%m.%Y", "%d/%m/%Y"):
+            try:
+                return datetime.strptime(birthday, i).date()
+            except ValueError:
+                continue
+        return None
+
+    #Список днів народжень через N днів
+    def get_upcoming_birthdays(self, days: int) -> list[tuple[str, str, int]]:
+        today = date.today()
+        upcoming = []
+
+        for record in self.data.values():
+            birthday = self.parse_birthday(record.birthday)
+            if not birthday:
+                continue
+
+            birthday_this_year = birthday.replace(year=today.year)
+
+            if birthday_this_year < today:
+                birthday_this_year = birthday.replace(year=today.year + 1)
+
+            delta_days = (birthday_this_year - today).days
+
+            if 0 <= delta_days <= days:
+                upcoming.append((record.name, birthday_this_year.strftime("%d.%m.%Y"), delta_days))
+
+        upcoming.sort(key=lambda item: item[2])
+        return upcoming

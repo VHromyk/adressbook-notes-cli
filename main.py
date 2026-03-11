@@ -1,5 +1,5 @@
 from help_commands import help_info
-from contacts import add_contact, delete_contact, show_all, search_contact, AddressBook
+from contacts import add_contact, delete_contact, show_all, search_contact, AddressBook, upcoming_birthdays
 from commands_enum import Command
 from storage import load_data, save_data
 
@@ -40,6 +40,9 @@ def main():
 
         elif command == Command.HELP.value:
             help_info()
+
+        elif command == Command.UPCOMING_BIRTHDAYS.value:
+            print(upcoming_birthdays(book))
 
         else:
             print("Invalid command.")

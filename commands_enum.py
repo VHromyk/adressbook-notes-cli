@@ -8,3 +8,4 @@ class Command(Enum):
     HELP = "help"
     EXIT = "exit"
     HELLO = "hello"
+    UPCOMING_BIRTHDAYS = "upcoming birthdays"
