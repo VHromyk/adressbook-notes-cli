@@ -1,9 +1,7 @@
-from contacts.models import AddressBook, Record
-
-book = AddressBook()
+from .address_book import AddressBook, Record
 
 
-def add_contact():
+def add_contact(book: AddressBook):
     name = input("Введіть ім'я: ").strip()
     if not name:
         return "Помилка: Ім'я не може бути порожнім."
@@ -39,14 +37,14 @@ def add_contact():
     return f"Контакт '{name}' успішно додано!"
 
 
-def delete_contact():
+def delete_contact(book: AddressBook):
     name = input("Введіть ім'я контакту для видалення: ").strip()
     if book.delete(name):
         return f"Контакт '{name}' видалено."
     return "Контакт не знайдено."
 
 
-def show_all():
+def show_all(book: AddressBook):
     if not book.data:
         return "Книга контактів порожня."
 
@@ -55,7 +53,7 @@ def show_all():
     return result
 
 
-def search_contact():
+def search_contact(book: AddressBook):
     query = input("Введіть ім'я для пошуку: ").strip()
     record = book.get(query)
     if record:

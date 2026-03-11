@@ -1,34 +1,48 @@
 from help_commands import help_info
-from contacts.logic import add_contact, delete_contact, show_all, search_contact
-from notes.notes import NotesRecord
+from contacts import add_contact, delete_contact, show_all, search_contact, AddressBook
+from commands_enum import Command
+from storage import load_data, save_data
+
+ADDRESS_BOOK_DATA_FILE = "addressbook.pkl"
+
 
 def main():
-        print("Welcome to Personal Assistant!")
-        notes = NotesRecord()
-        notes.show_notes()
+    print("Welcome to Personal Assistant!")
 
+    try:
+        book = load_data(ADDRESS_BOOK_DATA_FILE)
+    except FileNotFoundError:
+        book = AddressBook()
 
-        while True:
-            print("\nAvailable commands: [add, delete, show, search, exit, help]")
-            command = input("Enter a command: ").strip().lower()
+    while True:
+        print("\nAvailable commands:", [cmd.value for cmd in Command])
+        command = input("Enter a command: ").strip().lower()
 
-            if command == "a":
-                notes.add_title("Good")
-                break
-            elif command == "b":
-                notes.add_description("Good", "commands")
-            elif command == "c":
-                notes.add_tag("Good", "end")
-            elif command == "delete":
-                print(delete_contact())
-            elif command == "show":
-                print(show_all())
-            elif command == "search":
-                print(search_contact())
-            elif command == "help":
-                help_info()
-            else:
-                print("Invalid command.")
+        if command == Command.EXIT.value:
+            save_data(book, ADDRESS_BOOK_DATA_FILE)
+            print("Good bye!")
+            break
+
+        elif command == Command.HELLO.value:
+            print("How can I help you?")
+
+        elif command == Command.ADD.value:
+            print(add_contact(book))
+
+        elif command == Command.DELETE.value:
+            print(delete_contact(book))
+
+        elif command == Command.SHOW.value:
+            print(show_all(book))
+
+        elif command == Command.SEARCH.value:
+            print(search_contact(book))
+
+        elif command == Command.HELP.value:
+            help_info()
+
+        else:
+            print("Invalid command.")
 
 
 if __name__ == "__main__":
