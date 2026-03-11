@@ -1,55 +1,30 @@
-import os
+from datetime import datetime
 
 class NotesRecord:
-    def __init__(self, filename="notes.txt"):
-        base_dir = os.path.dirname(__file__)
-        self.filename = os.path.join(base_dir, filename)
-        self.notes = []
-        self.load_notes()
-
-    def load_notes(self):
-        self.notes = []
-
-        if not os.path.exists(self.filename):
-            return
-
-        with open(self.filename, "r", encoding="utf-8") as file:
-            for line in file:
-                line = line.strip()
-                if line:
-                    parts = line.split("|")
-                    title = parts[0].strip()
-                    description = parts[1].strip()
-                    tag = parts[2].strip() if len(parts) > 2 else ""
-                    self.notes.append({
-                        "title": title,
-                        "description": description,
-                        "tag": tag
-                    })
-
-    def save_notes(self):
-        with open(self.filename, "w", encoding="utf-8") as file:
-            for note in self.notes:
-                line = f"{note['title']} | {note['description']} | {note['tag']}\n"
-                file.write(line)
+    def __init__(self, notes):
+        self.notes = notes
 
     def add_note(self):
         title = input("Enter title: ")
         description = input("Enter description: ")
         tag = input("Enter tag: ")
 
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         self.notes.append({
                 "title": title,
                 "description": description,
-                "tag": tag
+                "tag": tag,
+                "date": date
             })
+        return f"Note with title {title} added successfully"
 
-        self.save_notes()
 
     def delete_note(self):
         title = input("Enter title for delete: ")
         self.notes = [note for note in self.notes if note["title"] != title]
-        self.save_notes()
+        return f"Note with title {title} deleted successfully"
+
 
     def edit_title(self):
         old_title = input("Enter old title for edit: ")
@@ -57,7 +32,7 @@ class NotesRecord:
         for note in self.notes:
             if note["title"] == old_title:
                 note["title"] = new_title
-        self.save_notes()
+        return f"Note title {old_title} edited on {new_title} "
 
     def edit_description(self):
         title = input("Enter title for edit description: ")
@@ -65,7 +40,7 @@ class NotesRecord:
         for note in self.notes:
             if note["title"] == title:
                 note["description"] = new_description
-        self.save_notes()
+        return f"Note description edited on {new_description} "
 
     def edit_tag(self):
         title = input("Enter title for edit tag: ")
@@ -73,19 +48,43 @@ class NotesRecord:
         for note in self.notes:
             if note["title"] == title:
                 note["tag"] = new_tag
-        self.save_notes()
+        return f"Note tag edited on {new_tag}"
 
-    def search_note(self, word):
-            word = input("Enter word for search note: ")
-            results = []
-            for note in self.notes:
-                if word.lower() in note["title"].lower() or \
-                word.lower() in note["description"].lower() or \
-                (note["tag"] and word.lower() in note["tag"].lower()):
-                    results.append(note)
-                    print(f"note_res_{results}")
-            return results
+    def search_note(self):
+        word = input("Enter word for search note: ")
+        results = []
 
-    def show_notes(self):
         for note in self.notes:
-            print(f"Title: {note['title']}, Description: {note['description']}, Tag: {note['tag']}")
+            if word.lower() in note["title"].lower() or \
+            word.lower() in note["description"].lower() or \
+            (note["tag"] and word.lower() in note["tag"].lower()):
+                results.append(note)
+
+        if not results:
+            return "Notes not found"
+
+        return f"Notes found: {results}"
+    
+    def sort_by_date(self):
+        sorted_notes = sorted(
+            self.notes,
+            key=lambda note: datetime.strptime(note["date"], "%Y-%m-%d %H:%M:%S")
+        )
+        result = []
+        for note in sorted_notes:
+            result.append(
+                f"Title: {note['title']}, Description: {note['description']}, "
+                f"Tag: {note['tag']}, Date: {note['date']}"
+            )
+        return "\n".join(result)
+    
+    def show_notes(self):
+        result = []
+
+        for note in self.notes:
+            result.append(
+                f"Title: {note['title']}, Description: {note['description']}, "
+                f"Tag: {note['tag']}, Date: {note['date']}"
+            )
+
+        return "\n".join(result)

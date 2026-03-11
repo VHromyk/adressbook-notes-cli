@@ -5,16 +5,21 @@ from storage import load_data, save_data
 from notes.notes import NotesRecord
 
 ADDRESS_BOOK_DATA_FILE = "addressbook.pkl"
-
+NOTES_FILE = "notes.pkl"
 
 def main():
     print("Welcome to Personal Assistant!")
-    notes = NotesRecord()
 
     try:
         book = load_data(ADDRESS_BOOK_DATA_FILE)
     except FileNotFoundError:
         book = AddressBook()
+
+    try:
+        notes = load_data(NOTES_FILE)
+    except FileNotFoundError:
+        notes = NotesRecord([])
+
 
     while True:
         print("\nAvailable commands:", [cmd.value for cmd in Command])
@@ -22,6 +27,7 @@ def main():
 
         if command == Command.EXIT.value:
             save_data(book, ADDRESS_BOOK_DATA_FILE)
+            save_data(notes, NOTES_FILE)
             print("Good bye!")
             break
 
@@ -44,26 +50,29 @@ def main():
             help_info()
 
         elif command == Command.ADD_NOTE.value:
-            notes.add_note()
+            print(notes.add_note())
 
         elif command == Command.DELETE_NOTE.value:
-            notes.delete_note() 
+            print(notes.delete_note())
 
         elif command == Command.EDIT_NOTE_TITLE.value:
-            notes.edit_title()   
+            print(notes.edit_title()) 
 
         elif command == Command.EDIT_NOTE_DESCRIPTION.value:
-            notes.edit_description()    
+            print(notes.edit_description())    
 
         elif command == Command.EDIT_NOTE_TAG.value:
-            notes.edit_tag()  
+            print(notes.edit_tag())  
 
         elif command == Command.SEARCH_NOTE.value:
-            notes.search_note()   
+            print(notes.search_note())
 
         elif command == Command.SHOW_NOTES.value:
-            notes.show_notes()  
-            
+            print(notes.show_notes())  
+ 
+        elif command == Command.SORTED_NOTES.value:
+            print(notes.sort_by_date())
+
         else:
             print("Invalid command.")
 
