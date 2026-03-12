@@ -72,10 +72,8 @@ class NotesRecord:
         for note in self.notes:
             if (note["tag"] and tag.lower() in note["tag"].lower()):
                 results.append(note)
-
         if not results:
             return "This tag not found"
-
         return f"Notes with tag {tag} found: {results}"
     
     def sort_by_date(self):
