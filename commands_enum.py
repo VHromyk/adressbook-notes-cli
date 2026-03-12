@@ -5,6 +5,7 @@ class Command(Enum):
     DELETE = "delete contact"
     SHOW = "show contacts"
     SEARCH = "search contact"
+    EDIT = "edit contact"
     HELP = "help"
     EXIT = "exit"
     HELLO = "hello"
