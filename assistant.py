@@ -1,7 +1,6 @@
 from difflib import get_close_matches
 
 from commands_enum import Command
-from help_commands import help_info
 
 from contacts import (
     add_contact,
@@ -9,6 +8,7 @@ from contacts import (
     show_all,
     search_contact,
     upcoming_birthdays,
+    edit_contact,
 )
 
 
@@ -23,9 +23,6 @@ def execute_command(command: str, book, notes):
     if command == Command.HELLO.value:
         print("How can I help you?")
 
-    elif command == Command.HELP.value:
-        help_info()
-
     # Contacts
     elif command == Command.ADD.value:
         print(add_contact(book))
@@ -38,6 +35,9 @@ def execute_command(command: str, book, notes):
 
     elif command == Command.SEARCH.value:
         print(search_contact(book))
+
+    elif command == Command.EDIT.value:
+        print(edit_contact(book))    
 
     elif command == Command.UPCOMING_BIRTHDAYS.value:
         print(upcoming_birthdays(book))

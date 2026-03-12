@@ -67,7 +67,7 @@ class NotesRecord:
                 note["tags"] = new_tags
                 return Fore.GREEN + f"Note tag edited on {new_tags}"
         return Fore.RED + "Note not found"
-    
+
     def search_note(self):
         word = input("Enter word for search note: ")
         results = []

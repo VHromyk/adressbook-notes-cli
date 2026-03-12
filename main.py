@@ -2,7 +2,7 @@ from assistant import suggest_command, execute_command
 from commands_enum import Command
 from storage import load_data, save_data
 from contacts import AddressBook
-from notes.notes import NotesRecord
+from notes import NotesRecord
 
 ADDRESS_BOOK_DATA_FILE = "addressbook.pkl"
 NOTES_FILE = "notes.pkl"
