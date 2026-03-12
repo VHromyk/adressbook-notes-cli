@@ -1,3 +1,4 @@
+from tabulate import tabulate
 from .address_book import AddressBook, Record
 
 
@@ -64,9 +65,21 @@ def show_all(book: AddressBook):
     if not book.data:
         return "Address book is empty."
 
-    result = "\n--- Contact List ---\n"
-    result += "\n".join(str(record) for record in book.data.values())
-    return result
+    headers = ["Name", "Phones", "Email", "Birthday", "Address"]
+    rows = []
+
+    for record in book.data.values():
+        rows.append(
+            [
+                record.name,
+                ", ".join(record.phones) if record.phones else "-",
+                record.email if record.email else "-",
+                record.birthday if record.birthday else "-",
+                record.address if record.address else "-",
+            ]
+        )
+
+    return "\n" + tabulate(rows, headers=headers, tablefmt="rounded_grid")
 
 
 def search_contact(book: AddressBook):
