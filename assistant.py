@@ -67,5 +67,8 @@ def execute_command(command: str, book, notes):
     elif command == Command.SORTED_NOTES.value:
         print(notes.sort_by_date())
 
+    elif command == Command.SEARCH_NOTE_BY_TAG.value:
+        print(notes.search_tag())
+
     else:
         print("Invalid command.")
