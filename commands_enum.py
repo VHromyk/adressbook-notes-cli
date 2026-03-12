@@ -5,6 +5,7 @@ class Command(Enum):
     DELETE = "contact del"
     SHOW = "contact show"
     SEARCH = "contact find"
+    EDIT = "contact edit"
     UPCOMING_BIRTHDAYS = "contact bday"
     ADD_NOTE = "note add"
     DELETE_NOTE = "note del"
