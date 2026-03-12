@@ -15,5 +15,6 @@ class Command(Enum):
     EDIT_NOTE_DESCRIPTION = "edit note description"
     EDIT_NOTE_TAG = "edit note tag"
     SEARCH_NOTE = "search note"
+    SEARCH_NOTE_BY_TAG = "search note by tag"
     SHOW_NOTES = "show notes"
     SORTED_NOTES = "sorted notes"

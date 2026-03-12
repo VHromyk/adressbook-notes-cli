@@ -65,6 +65,19 @@ class NotesRecord:
 
         return f"Notes found: {results}"
     
+    def search_tag(self):
+        tag = input("Enter tag for search note: ")
+        results = []
+
+        for note in self.notes:
+            if (note["tag"] and tag.lower() in note["tag"].lower()):
+                results.append(note)
+
+        if not results:
+            return "This tag not found"
+
+        return f"Notes with tag {tag} found: {results}"
+    
     def sort_by_date(self):
         sorted_notes = sorted(
             self.notes,
