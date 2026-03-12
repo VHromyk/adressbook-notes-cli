@@ -1,420 +1,334 @@
-# Personal CLI Assistant (AddressBook & Notes)
+## Personal CLI Assistant (AddressBook & Notes)
 
-A **Python console assistant** that allows you to manage **contacts** and **notes** directly from the command line.
-
-The assistant stores data locally and allows users to organize contacts and notes, search through them, edit information, and keep data persistent between application runs.
+CLI-асистент на Python для керування контактами та нотатками з терміналу. Дані зберігаються локально у файлах `addressbook.pkl` та `notes.pkl`.
 
 ---
 
-# Features
+## Функціонал
 
-## Contacts Management
-
-The assistant allows you to manage a personal address book.
-
-Supported functionality:
-
-* Add contacts with:
-
-  * name
-  * phone number
-  * email
-  * birthday
-  * address
-* Search contacts by name, phone, or email
-* Edit contact information
-* Delete contacts
-* Display contacts with upcoming birthdays
-* Validate phone numbers and emails during creation or editing
-
----
-
-## Notes Management
-
-The assistant also supports working with notes.
-
-Each note contains:
-
-* **title**
-* **text content**
-* **creation date**
-* **tags**
-
-Tags help categorize notes and allow faster searching.
-
-Supported functionality:
-
-* Create notes
-* Search notes by title or content
-* Edit notes
-* Delete notes
-* Add and remove tags
-* Search notes by tags
+- **Контакти**
+  - додавання контакту (імʼя, телефон, email, дата народження, адреса)
+  - перегляд усіх контактів
+  - пошук контакту за імʼям
+  - показ днів народження в найближчі N днів
+- **Нотатки**
+  - створення нотатки (заголовок, опис, теги)
+  - видалення нотатки
+  - редагування заголовка, опису, тегів
+  - пошук по заголовку/опису/теґах
+  - пошук нотаток за тегом
+  - вивід усіх нотаток
+  - сортування нотаток за датою створення
+- **Сервісне**
+  - команда `hello`
+  - команда `exit` з збереженням даних
+  - підказка схожих команд (fuzzy search)
 
 ---
 
-# Data Storage
+## Структура проєкту
 
-All data is stored locally on the user's computer.
-
-The assistant saves:
-
-* contacts
-* notes
-
-Data persists between application restarts.
-
----
-
-# Project Structure
-
-```
-addressbook-notes-cli
+```text
+adressbook-notes-cli
 │
 ├── main.py
-├── help_commands.py
-├── requirements.txt
+├── assistant.py
+├── commands_enum.py
 ├── README.md
+├── requirements.txt
 │
 ├── contacts
-│   ├── contact.py
-│   └── address_book.py
+│   ├── __init__.py
+│   ├── address_book.py
+│   └── contact.py
 │
 ├── notes
-│   ├── note.py
-│   └── notes_book.py
+│   ├── __init__.py
+│   └── notes.py
 │
 └── storage
-    └── storage.py
+    ├── __init__.py
+    ├── load_data.py
+    └── save_data.py
 ```
 
 ---
 
-# Installation
+## Встановлення
 
-## 1. Clone the repository
+### 1. Клонування репозиторію
 
 ```bash
 git clone https://github.com/VHromyk/adressbook-notes-cli.git
-cd addressbook-notes-cli
+cd adressbook-notes-cli
 ```
 
----
-
-## 2. Create a virtual environment
+### 2. Створення віртуального оточення
 
 ```bash
 python3 -m venv .venv
 ```
 
----
+### 3. Активація віртуального оточення
 
-## 3. Activate the virtual environment
-
-### Mac / Linux
+**Mac / Linux**
 
 ```bash
 source .venv/bin/activate
 ```
 
-### Windows
+**Windows**
 
 ```bash
 .venv\Scripts\activate
 ```
 
----
-
-## 4. Install dependencies
+### 4. Встановлення залежностей
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## 5. Run the application
+### 5. Запуск застосунку
 
 ```bash
 python main.py
 ```
 
----
-
-# Available Commands
-
-## General Commands
-
-| Command | Description             |
-| ------- | ----------------------- |
-| `help`  | Show available commands |
-| `hello` | Greeting message        |
-| `exit`  | Exit the program        |
+При запуску при першому зверненні будуть створені файли `addressbook.pkl` та `notes.pkl` (якщо їх ще немає).
 
 ---
 
-# Contacts Commands
+## Формат взаємодії
 
-### Add contact
+Після запуску застосунок показує список доступних команд і чекає введення рядка команди:
 
-```
-contacts add <name> <phone> <email> <birthday> <address>
+```text
+Welcome to Personal Assistant!
+
+Available commands: ['contact add', 'contact del', 'contact show', ...]
+Enter a command:
 ```
 
-Example:
-
-```
-contacts add John +380991234567 john@mail.com 1995-10-21 Kyiv
-```
+Команди вводяться **без аргументів** — далі застосунок задає потрібні запитання через `input`.
 
 ---
 
-### Show all contacts
+## Команди для контактів
 
-```
-contacts show
-```
+### `contact add`
 
----
+Додає новий контакт. Застосунок по черзі запитує:
 
-### Find contact
+- імʼя
+- телефон (10–12 цифр, валідація регулярним виразом)
+- email (з валідацією)
+- дату народження (формати: `DD.MM.YYYY`, `YYYY-MM-DD`, `DD/MM/YYYY`)
+- адресу
 
-```
-contacts find <query>
-```
+Приклад сесії:
 
-Example:
-
-```
-contacts find John
-contacts find gmail
-```
-
----
-
-### Edit contact
-
-```
-contacts edit <name> <field> <value>
+```text
+Enter a command: contact add
+Введіть ім'я: Ivan
+Введіть телефон (10-12 цифр): +380991234567
+Введіть email: ivan@example.com
+Введіть день народження (DD.MM.YYYY): 01.01.1990
+Введіть адресу: Kyiv
+Контакт 'Ivan' успішно додано!
 ```
 
-Example:
+### `contact del`
 
-```
-contacts edit John phone +380971111111
-contacts edit John email john@gmail.com
-```
+Видаляє контакт за імʼям.
 
----
-
-### Delete contact
-
-```
-contacts delete <name>
+```text
+Enter a command: contact del
+Введіть ім'я контакту для видалення: Ivan
+Контакт 'Ivan' видалено.
 ```
 
----
+### `contact show`
 
-### Upcoming birthdays
+Показує всі збережені контакти у читабельному форматі.
 
-Shows contacts with birthdays in a specified number of days.
-
-```
-contacts birthdays <days>
-```
-
-Example:
-
-```
-contacts birthdays 7
+```text
+Enter a command: contact show
+--- Список контактів ---
+Ім'я: Ivan
+Телефон: +380991234567
+Email: ivan@example.com
+День народження: 01.01.1990
+Адреса: Kyiv
 ```
 
----
+### `contact find`
 
-# Notes Commands
+Пошук контакту за точним імʼям.
 
-Each note contains:
-
-* title
-* text
-* creation date
-* tags
-
----
-
-### Add note
-
-```
-notes add <title> | <text>
+```text
+Enter a command: contact find
+Введіть ім'я для пошуку: Ivan
+Ім'я: Ivan
+Телефон: +380991234567
+...
 ```
 
-Example:
+### `contact bday`
 
-```
-notes add Shopping | Buy milk, bread and eggs
-```
+Показує контакти, у яких день народження в найближчі `N` днів.
 
-The assistant automatically records the **creation date**.
-
----
-
-### Show notes
-
-```
-notes show
-```
-
-Example output:
-
-```
-1 | Shopping
-Created: 2026-03-10
-Tags: home, shopping
-
-Buy milk, bread and eggs
+```text
+Enter a command: contact bday
+Введіть кількість днів: 7
+Контакти з днем народження у найближчі 7 днів:
+Ivan — 01.01.2026 (через 3 дн.)
 ```
 
 ---
 
-### Find notes
+## Команди для нотаток
 
-Search notes by title or text.
+Усі операції з нотатками працюють через обʼєкт `NotesRecord` і зберігаються у `notes.pkl`.
 
+Формат нотатки:
+
+- `title` — заголовок
+- `description` — текст
+- `tags` — список тегів
+- `date` — дата створення (`YYYY-MM-DD HH:MM:SS`)
+
+### `note add`
+
+Додає нову нотатку.
+
+```text
+Enter a command: note add
+Enter title: Shopping
+Enter description: Buy milk and bread
+Enter tags separated by comma: home, food
+Note with title Shopping added successfully
 ```
-notes find <query>
+
+### `note del`
+
+Видаляє нотатку за заголовком.
+
+```text
+Enter a command: note del
+Enter title for delete: Shopping
+Note with title Shopping deleted successfully
 ```
 
-Example:
+### `note edit title`
 
+Змінює заголовок нотатки.
+
+```text
+Enter a command: note edit title
+Enter old title for edit: Shopping
+Enter new title for edit: Shopping list
+Note title Shopping edited on Shopping list
 ```
-notes find shopping
-notes find milk
+
+### `note edit description`
+
+Змінює опис нотатки.
+
+```text
+Enter a command: note edit description
+Enter title for edit description: Shopping list
+Enter new description: Buy milk, bread and eggs
+Note description edited on Buy milk, bread and eggs
+```
+
+### `note edit tag`
+
+Повністю оновлює список тегів нотатки.
+
+```text
+Enter a command: note edit tag
+Enter title for edit tag: Shopping list
+Enter new tags separated by comma: shopping, home
+Note tags edited on shopping, home
+```
+
+### `note find`
+
+Пошук нотаток за словом у заголовку, описі або тегах.
+
+```text
+Enter a command: note find
+Enter word for search note: shopping
+Notes found: [{'title': 'Shopping list', 'description': 'Buy milk...', 'tags': ['shopping', 'home'], 'date': '2026-03-12 12:00:00'}]
+```
+
+### `note find tag`
+
+Пошук нотаток за тегом.
+
+```text
+Enter a command: note find tag
+Enter tag for search note: shopping
+{...формат виводу списком рядків...}
+```
+
+### `show notes`
+
+Виводить усі нотатки у форматі один запис на блок.
+
+```text
+Enter a command: show notes
+Title: Shopping list, Description: Buy milk..., Tags: shopping, home, Date: 2026-03-12 12:00:00
+```
+
+### `sorted notes`
+
+Повертає всі нотатки, відсортовані за датою створення (від найстаріших до найновіших).
+
+```text
+Enter a command: sorted notes
+Title: ..., Description: ..., Tags: ..., Date: ...
 ```
 
 ---
 
-### Edit note
+## Загальні команди
 
-```
-notes edit <id> <new_title> | <new_text>
-```
+### `hello`
 
-Example:
+Проста вітальна команда.
 
-```
-notes edit 1 Shopping list | Buy milk and apples
-```
-
----
-
-### Delete note
-
-```
-notes delete <id>
+```text
+Enter a command: hello
+How can I help you?
 ```
 
----
+### Невідома команда та підказка
 
-# Tags for Notes
+Якщо введена команда не знайдена, асистент спробує запропонувати найбільш схожу:
 
-Tags allow categorizing notes and improving search functionality.
-
----
-
-### Add tag
-
-```
-notes tag add <id> <tag>
+```text
+Enter a command: contatc add
+Invalid command: 'contatc add'.
+Did you mean 'contact add'? (y/n):
 ```
 
-Example:
+### `exit`
 
-```
-notes tag add 1 shopping
-notes tag add 1 groceries
-```
+Зберігає `addressbook.pkl` та `notes.pkl` і завершує роботу:
 
----
-
-### Remove tag
-
-```
-notes tag remove <id> <tag>
-```
-
-Example:
-
-```
-notes tag remove 1 groceries
-```
-
----
-
-### Find notes by tag
-
-```
-notes tag find <tag>
-```
-
-Example:
-
-```
-notes tag find shopping
-```
-
----
-
-### Sort notes by tag
-
-```
-notes tag sort <tag>
-```
-
-Example:
-
-```
-notes tag sort shopping
-```
-
----
-
-# Example CLI Session
-
-```
-Enter command: contacts add John +380991234567 john@gmail.com 1995-10-21 Kyiv
-Contact added
-
-Enter command: notes add Shopping | Buy milk and bread
-Note added
-
-Enter command: notes show
-
-1 | Shopping
-Created: 2026-03-10
-Tags: shopping
-
-Buy milk and bread
-
-Enter command: exit
+```text
+Enter a command: exit
 Good bye!
 ```
 
 ---
 
-# Technologies
+## Технології
 
-* Python 3
-* CLI interface
-* Virtual environments (`venv`)
-* Package manager (`pip`)
-* Local data storage (JSON / pickle)
-
----
-
-# Future Improvements
-
-* fuzzy command suggestions
-* improved CLI navigation
-* advanced search
-* contact grouping
-* improved tagging system
+- Python 3
+- CLI
+- `venv`
+- `pip`
+- збереження даних через `pickle`
