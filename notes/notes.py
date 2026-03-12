@@ -1,55 +1,73 @@
 from datetime import datetime
+from colorama import Fore, init
+
+init(autoreset=True)
 
 class NotesRecord:
     def __init__(self, notes):
         self.notes = notes
+        self.idis = []
 
     def add_note(self):
         title = input("Enter title: ")
         description = input("Enter description: ")
-        tag = input("Enter tag: ")
+        tag = input("Enter tags separated by comma: ")
 
         date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if not self.notes:
+            note_id = 1
+        else:
+            note_id = self.notes[-1]["id"] + 1
 
         self.notes.append({
+                "id": note_id,
                 "title": title,
                 "description": description,
-                "tag": tag,
+                "tags": [t.strip() for t in tag.split(",")],
                 "date": date
             })
-        return f"Note with title {title} added successfully"
+        return Fore.GREEN + f"Note with title {title} added successfully"
 
 
     def delete_note(self):
-        title = input("Enter title for delete: ")
-        self.notes = [note for note in self.notes if note["title"] != title]
-        return f"Note with title {title} deleted successfully"
+        id = int(input("Enter id for delete: "))
+        if not any(note["id"] == id for note in self.notes):
+            return Fore.RED + "Note not found"
 
+        self.notes = [note for note in self.notes if note["id"] != id]
+
+        return Fore.GREEN + f"Note with id {id} deleted successfully"
 
     def edit_title(self):
-        old_title = input("Enter old title for edit: ")
+        note_id = int(input("Enter id for edit title: "))
         new_title = input("Enter new title for edit: ")
+
         for note in self.notes:
-            if note["title"] == old_title:
+            if note["id"] == note_id:
                 note["title"] = new_title
-        return f"Note title {old_title} edited on {new_title} "
+                return Fore.GREEN + f"Note title with id {note_id} edited to '{new_title}'"
+
+        return Fore.RED + "Note not found"
 
     def edit_description(self):
-        title = input("Enter title for edit description: ")
+        id = int(input("Enter id for edit description: "))
         new_description = input("Enter new description: ")
+
         for note in self.notes:
-            if note["title"] == title:
+            if note["id"] == id:
                 note["description"] = new_description
-        return f"Note description edited on {new_description} "
-
+                return Fore.GREEN + f"Note description edited on {new_description} "
+        return Fore.RED + "Note not found"
+        
     def edit_tag(self):
-        title = input("Enter title for edit tag: ")
-        new_tag = input("Enter new tag: ")
+        id = int(input("Enter id for edit tag: "))
+        new_tags = [t.strip() for t in input("Enter new tags separated by comma: ").split(",")]
         for note in self.notes:
-            if note["title"] == title:
-                note["tag"] = new_tag
-        return f"Note tag edited on {new_tag}"
-
+            if note["id"] == id:
+                note["tags"] = new_tags
+                return Fore.GREEN + f"Note tag edited on {new_tags}"
+        return Fore.RED + "Note not found"
+    
     def search_note(self):
         word = input("Enter word for search note: ")
         results = []
@@ -57,24 +75,24 @@ class NotesRecord:
         for note in self.notes:
             if word.lower() in note["title"].lower() or \
             word.lower() in note["description"].lower() or \
-            (note["tag"] and word.lower() in note["tag"].lower()):
+            any(word.lower() in tag.lower() for tag in note["tags"]):
                 results.append(note)
 
         if not results:
-            return "Notes not found"
+            return Fore.YELLOW + "Notes not found"
 
-        return f"Notes found: {results}"
+        return Fore.GREEN + f"Notes found: {results}"
     
     def search_tag(self):
         tag = input("Enter tag for search note: ")
         results = []
 
         for note in self.notes:
-            if (note["tag"] and tag.lower() in note["tag"].lower()):
+            if tag.lower() in [t.lower() for t in note["tags"]]:
                 results.append(note)
         if not results:
-            return "This tag not found"
-        return f"Notes with tag {tag} found: {results}"
+            return Fore.RED + "This tag not found"
+        return Fore.GREEN + f"Notes with tag {tag} found: {results}"
     
     def sort_by_date(self):
         sorted_notes = sorted(
@@ -84,18 +102,24 @@ class NotesRecord:
         result = []
         for note in sorted_notes:
             result.append(
-                f"Title: {note['title']}, Description: {note['description']}, "
-                f"Tag: {note['tag']}, Date: {note['date']}"
+                f"id: {note['id']}, Title: {note['title']}, Description: {note['description']}, "
+                f"Tags: {note['tags']}, Date: {note['date']}"
             )
-        return "\n".join(result)
+        return Fore.GREEN + "\n".join(result)
     
     def show_notes(self):
+        if not self.notes:
+            return "No notes available"
+
         result = []
 
         for note in self.notes:
+            tags = ", ".join(note.get("tags", []))
             result.append(
-                f"Title: {note['title']}, Description: {note['description']}, "
-                f"Tag: {note['tag']}, Date: {note['date']}"
+                Fore.CYAN +
+                f"ID: {note['id']} | Title: {note['title']} | "
+                f"Description: {note['description']} | "
+                f"Tags: {tags} | Date: {note['date']}"
             )
 
         return "\n".join(result)
