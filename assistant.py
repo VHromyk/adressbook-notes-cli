@@ -9,6 +9,7 @@ from contacts import (
     show_all,
     search_contact,
     upcoming_birthdays,
+    edit_contact,
 )
 
 
@@ -38,6 +39,9 @@ def execute_command(command: str, book, notes):
 
     elif command == Command.SEARCH.value:
         print(search_contact(book))
+
+    elif command == Command.EDIT.value:
+        print(edit_contact(book))    
 
     elif command == Command.UPCOMING_BIRTHDAYS.value:
         print(upcoming_birthdays(book))
