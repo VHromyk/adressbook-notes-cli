@@ -1,0 +1,20 @@
+from enum import Enum
+
+class Command(Enum):
+    ADD = "contact add"
+    DELETE = "contact del"
+    SHOW = "contact show"
+    SEARCH = "contact find"
+    EDIT = "contact edit"
+    UPCOMING_BIRTHDAYS = "contact bday"
+    ADD_NOTE = "note add"
+    DELETE_NOTE = "note del"
+    EDIT_NOTE_TITLE = "note edit title"
+    EDIT_NOTE_DESCRIPTION = "note edit description"
+    EDIT_NOTE_TAG = "note edit tag"
+    SEARCH_NOTE = "note find"
+    SEARCH_NOTE_BY_TAG = "note find tag"
+    SHOW_NOTES = "note show"
+    SORTED_NOTES = "note sort"
+    EXIT = "exit"
+    HELLO = "hello"
