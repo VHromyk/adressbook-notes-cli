@@ -1,5 +1,15 @@
+import pickle
 import re
 from datetime import datetime, date
+from pathlib import Path
+
+DATA_DIR = Path.home() / "adressbook-notes-cli"
+ADDRESSBOOK_FILENAME = "addressbook.pkl"
+
+
+def _addressbook_data_path() -> Path:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    return DATA_DIR / ADDRESSBOOK_FILENAME
 
 
 class Record:
@@ -65,6 +75,19 @@ class AddressBook:
     def __init__(self) -> None:
         self.data: dict[str, Record] = {}
 
+    @classmethod
+    def load(cls, path: Path | None = None) -> "AddressBook":
+        filepath = path or _addressbook_data_path()
+        if not filepath.exists():
+            return cls()
+        with open(filepath, "rb") as f:
+            return pickle.load(f)
+
+    def save(self, path: Path | None = None) -> None:
+        filepath = path or _addressbook_data_path()
+        with open(filepath, "wb") as f:
+            pickle.dump(self, f)
+
     def add_record(self, record: Record) -> None:
         self.data[record.name] = record
 
@@ -77,7 +100,6 @@ class AddressBook:
     def get(self, name: str) -> Record | None:
         return self.data.get(name)
 
-    # Парсинг дати
     def parse_birthday(self, birthday: str) -> date | None:
         if not birthday:
             return None
@@ -89,7 +111,6 @@ class AddressBook:
                 continue
         return None
 
-    # Список днів народжень через N днів
     def get_upcoming_birthdays(self, days: int) -> list[tuple[str, str, int]]:
         today = date.today()
         upcoming = []

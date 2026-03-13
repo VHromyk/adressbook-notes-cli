@@ -1,3 +1,3 @@
-from .notes import NotesRecord
+from .notes import Note, NotesBook
 
-__all__ = ["NotesRecord"]
+__all__ = ["Note", "NotesBook"]

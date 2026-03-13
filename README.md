@@ -45,11 +45,6 @@ adressbook-notes-cli
 ├── notes
 │   ├── __init__.py
 │   └── notes.py
-│
-└── storage
-    ├── __init__.py
-    ├── load_data.py
-    └── save_data.py
 ```
 
 ---
