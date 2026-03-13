@@ -1,33 +1,22 @@
 from assistant import suggest_command, execute_command
 from commands_enum import Command
-from storage import load_data, save_data
 from contacts import AddressBook
-from notes import NotesRecord
-
-ADDRESS_BOOK_DATA_FILE = "addressbook.pkl"
-NOTES_FILE = "notes.pkl"
+from notes import NotesBook
 
 
 def main():
     print("Welcome to Personal Assistant!")
 
-    try:
-        book = load_data(ADDRESS_BOOK_DATA_FILE)
-    except FileNotFoundError:
-        book = AddressBook()
-
-    try:
-        notes = load_data(NOTES_FILE)
-    except FileNotFoundError:
-        notes = NotesRecord([])
+    book = AddressBook.load()
+    notes = NotesBook.load()
 
     while True:
         print("\nAvailable commands:", [cmd.value for cmd in Command])
         command = input("Enter a command: ").strip().lower()
 
         if command == Command.EXIT.value:
-            save_data(book, ADDRESS_BOOK_DATA_FILE)
-            save_data(notes, NOTES_FILE)
+            book.save()
+            notes.save()
             print("Good bye!")
             break
 

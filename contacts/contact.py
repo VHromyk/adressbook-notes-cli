@@ -1,5 +1,6 @@
 from tabulate import tabulate
 from .address_book import AddressBook, Record
+from colorama import Fore, init
 
 
 def add_contact(book: AddressBook):
@@ -87,7 +88,7 @@ def search_contact(book: AddressBook):
     record = book.get(query)
     if record:
         return str(record)
-    return "Contact not found."
+    return Fore.RED + "Contact not found."
 
 
 def edit_contact(book: AddressBook):
@@ -95,7 +96,7 @@ def edit_contact(book: AddressBook):
     record = book.get(name)
 
     if not record:
-        return "Contact not found."
+        return Fore.RED + "Contact not found."
 
     print(f"\n--- Editing Contact: {name} ---")
     print("1. Update Phone")
@@ -121,44 +122,43 @@ def edit_contact(book: AddressBook):
             else:
                 new_phone = input("Enter phone number to add: ").strip()
                 record.add_phone(new_phone)
-            return "Phone updated successfully."
+            return Fore.GREEN + "Phone updated successfully."
 
         elif choice == "2":
             new_email = input("Enter new email: ").strip()
             record.set_email(new_email)
-            return "Email updated successfully."
+            return Fore.GREEN + "Email updated successfully."
 
         elif choice == "3":
             new_birthday = input("Enter new birthday (DD.MM.YYYY): ").strip()
             record.set_birthday(new_birthday)
-            return "Birthday updated successfully."
+            return Fore.GREEN + "Birthday updated successfully."
 
         elif choice == "4":
             new_address = input("Enter new address: ").strip()
             record.set_address(new_address)
-            return "Address updated successfully."
+            return Fore.GREEN + "Address updated successfully."
 
         elif choice == "5":
-            return "Editing cancelled."
+            return Fore.RED + "Editing cancelled."
         else:
-            return "Invalid choice."
+            return Fore.RED + "Invalid choice."
 
     except ValueError as e:
         return f"Error: {e}"
 
 
-# Інтерфейс для модуля Днів Народжень
 def upcoming_birthdays(book: AddressBook):
     days_input = input("Enter number of days: ").strip()
 
     if not days_input.isdigit():
-        return "Error: Please enter a valid positive integer."
+        return Fore.RED + "Please enter a valid positive integer."
 
     days = int(days_input)
     upcoming = book.get_upcoming_birthdays(days)
 
     if not upcoming:
-        return f"Error: There are no contacts with birthdays in the next {days} days."
+        return  Fore.RED + f"There are no contacts with birthdays in the next {days} days."
 
     result = [f"Contacts with birthdays in the next {days} days:"]
     for name, birthday, delta in upcoming:
